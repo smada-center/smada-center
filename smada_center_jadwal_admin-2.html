@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMADA CENTER - Jadwal Kegiatan Sekolah</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#172033}
+.navbar{height:78px;padding:0 8%;background:#fff;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e8ebf2;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:12px}.logo-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;background:#172033;color:#fff;border-radius:12px;font-size:13px;font-weight:800}.logo h2{font-size:17px}.logo span{font-size:10px;color:#8b93a5}
+nav{display:flex;gap:30px}nav a{color:#6d7585;text-decoration:none;font-size:13px;font-weight:600}
+.hero{min-height:510px;padding:80px 8%;display:flex;align-items:center;justify-content:space-between;gap:50px;background:radial-gradient(circle at 90% 20%,rgba(60,100,180,.12),transparent 35%),#f5f7fb}
+.hero-content{max-width:620px}.badge{display:inline-block;padding:8px 13px;background:#e9eef8;color:#3d5d98;border-radius:30px;font-size:11px;font-weight:700;margin-bottom:22px}
+.hero h1{font-size:clamp(40px,5vw,67px);line-height:1.04;letter-spacing:-3px;margin-bottom:22px}.hero h1 span{color:#476ba8}
+.hero p{color:#747d8f;font-size:15px;line-height:1.8;max-width:520px;margin-bottom:30px}.hero-button{display:inline-block;padding:14px 20px;background:#172033;color:#fff;text-decoration:none;border-radius:10px;font-size:13px;font-weight:700}
+.hero-card{width:350px;padding:28px;background:#fff;border-radius:20px;box-shadow:0 20px 50px rgba(35,48,75,.1)}
+.calendar-top{display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:#9aa2b1;margin-bottom:30px}.calendar-date{display:flex;align-items:center;gap:20px}.calendar-date strong{font-size:70px;line-height:1}.calendar-date b{display:block;font-size:17px;margin-bottom:6px}.calendar-date small{color:#858d9d;line-height:1.5;font-size:11px}
+.stats{padding:0 8%;display:grid;grid-template-columns:repeat(3,1fr);gap:15px;position:relative;margin-top:-25px}.stat-card{background:#fff;padding:25px;border-radius:15px;box-shadow:0 10px 30px rgba(35,48,75,.06)}.stat-card strong{display:block;font-size:25px;margin-bottom:5px}.stat-card span{color:#8b93a3;font-size:12px}
+main{padding:100px 8%}.section-title{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:35px}.small-title{color:#5272aa;font-size:10px;font-weight:800;letter-spacing:1.5px}.section-title h2{font-size:34px;letter-spacing:-1.5px;margin-top:5px}
+.controls{display:flex;gap:10px}.controls select,.controls input{height:42px;border:1px solid #e1e5ec;background:#fff;border-radius:9px;padding:0 13px;color:#4c5566;font-family:inherit;font-size:12px;outline:none}.controls input{width:200px}
+.schedule-container{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.event-card{background:#fff;padding:20px;border-radius:14px;display:flex;gap:18px;border:1px solid #edf0f5;transition:.2s}.event-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(35,48,75,.08)}
+.event-date{width:62px;min-width:62px;height:70px;background:#f0f3f8;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-direction:column}.event-date strong{font-size:23px;color:#172033}.event-date span{font-size:9px;color:#788294;font-weight:800}
+.event-info{flex:1}.category{font-size:9px;font-weight:800;color:#5c6e91;letter-spacing:.3px}.event-info h3{font-size:15px;margin:6px 0}.event-info p{font-size:11px;color:#778091;margin-bottom:5px}.event-info small{font-size:10px;color:#a0a7b3}.empty{grid-column:1/-1;text-align:center;padding:60px;background:#fff;border-radius:15px;color:#8a92a0}
+.about{padding:80px 8%;background:#fff;display:grid;grid-template-columns:1.5fr 1fr;gap:60px}.about h2{font-size:35px;margin:7px 0 15px}.about p{color:#788191;font-size:13px;line-height:1.8;max-width:600px}.about-box{padding:28px;background:#f5f7fb;border-radius:15px}.about-box span{font-size:28px}.about-box h3{margin:12px 0 8px}.about-box p{font-size:12px}
+footer{padding:25px 8%;background:#172033;color:#8992a4;font-size:10px;text-align:center}
+
+.admin-nav-btn{border:0;background:#172033;color:#fff;padding:10px 14px;border-radius:9px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.admin-nav-btn:hover{opacity:.9}
+.modal{display:none;position:fixed;inset:0;background:rgba(10,18,35,.55);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-box{width:100%;max-width:470px;background:#fff;border-radius:18px;padding:28px;box-shadow:0 25px 70px rgba(0,0,0,.2)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.modal-head h3{font-size:20px}
+.close-btn{border:0;background:#f0f2f6;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px}
+.form-group{margin-bottom:14px}.form-group label{display:block;font-size:11px;font-weight:700;color:#586174;margin-bottom:6px}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:11px 12px;border:1px solid #dfe4ec;border-radius:9px;font-family:inherit;font-size:12px;outline:none}
+.form-group textarea{min-height:75px;resize:vertical}
+.primary-btn{width:100%;border:0;background:#172033;color:#fff;padding:12px;border-radius:9px;font-weight:700;cursor:pointer}
+.secondary-btn{border:0;background:#edf0f5;color:#344054;padding:10px 14px;border-radius:9px;font-weight:700;cursor:pointer}
+.danger-btn{border:0;background:#feeceb;color:#b42318;padding:8px 10px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer}
+.admin-panel{display:none;padding:35px 8%;background:#eef2f8;border-bottom:1px solid #dfe4ec}
+.admin-panel.show{display:block}
+.admin-top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:20px}
+.admin-top h2{font-size:24px}.admin-top p{font-size:11px;color:#788191;margin-top:4px}
+.admin-actions{display:flex;gap:8px}
+.admin-table{background:#fff;border-radius:14px;padding:15px;overflow:auto}
+.admin-row{display:grid;grid-template-columns:105px 1.5fr 100px 1.5fr 110px;gap:10px;align-items:center;padding:11px 5px;border-bottom:1px solid #edf0f4;font-size:11px}
+.admin-row.header{font-weight:800;color:#687386;font-size:10px}
+.admin-row:last-child{border-bottom:0}
+.login-error{display:none;color:#b42318;background:#feeceb;padding:9px;border-radius:8px;font-size:11px;margin-bottom:12px}
+.login-error.show{display:block}
+@media(max-width:800px){.admin-nav-btn{padding:9px 10px}.admin-panel{padding:25px 5%}.admin-top{align-items:flex-start;flex-direction:column}.admin-row{grid-template-columns:90px 1fr 90px 1fr 90px;min-width:550px}}
+
+@media(max-width:800px){.navbar{padding:0 5%}nav{display:flex;gap:8px}.navbar nav a{display:none}.admin-nav-btn{display:block}.hero{padding:60px 5%;flex-direction:column;align-items:flex-start}.hero-card{width:100%}.stats{padding:0 5%;grid-template-columns:1fr;margin-top:20px}main{padding:70px 5%}.section-title{align-items:flex-start;flex-direction:column}.controls{width:100%;flex-direction:column}.controls input{width:100%}.schedule-container{grid-template-columns:1fr}.about{padding:60px 5%;grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="navbar">
+<div class="logo"><div class="logo-icon">SC</div><div><h2>SMADA CENTER</h2><span>School Information Center</span></div></div>
+<nav><a href="#beranda">Beranda</a><a href="#jadwal">Jadwal</a><a href="#tentang">Tentang</a><button class="admin-nav-btn" onclick="openLogin()">🔐 Pengurus</button></nav>
+</header>
+
+<section class="hero" id="beranda">
+<div class="hero-content">
+<div class="badge">📢 INFORMASI SEKOLAH</div>
+<h1>Semua Jadwal Sekolah<br><span>Dalam Satu Tempat.</span></h1>
+<p>Temukan jadwal kegiatan, upacara, hari besar nasional, dan informasi penting sekolah dengan lebih mudah.</p>
+<a href="#jadwal" class="hero-button">Lihat Jadwal →</a>
+</div>
+<div class="hero-card">
+<div class="calendar-top"><span>JADWAL TERDEKAT</span><span>2026</span></div>
+<div class="calendar-date"><strong id="nextDay">01</strong><div><b id="nextMonth">OKTOBER</b><small id="nextEvent">Upacara Hari Kesaktian Pancasila</small></div></div>
+</div>
+</section>
+
+<section class="stats">
+<div class="stat-card"><strong id="totalEvents">0</strong><span>Total Kegiatan</span></div>
+<div class="stat-card"><strong>12</strong><span>Bulan Jadwal</span></div>
+<div class="stat-card"><strong>2026–27</strong><span>Periode</span></div>
+</section>
+
+
+<section class="admin-panel" id="adminPanel">
+  <div class="admin-top">
+    <div>
+      <h2>Panel Pengurus</h2>
+      <p>Kelola jadwal kegiatan SMADA CENTER.</p>
+    </div>
+    <div class="admin-actions">
+      <button class="secondary-btn" onclick="openEventForm()">＋ Tambah Jadwal</button>
+      <button class="secondary-btn" onclick="logout()">Keluar</button>
+    </div>
+  </div>
+  <div class="admin-table">
+    <div class="admin-row header"><div>Tanggal</div><div>Kegiatan</div><div>Kategori</div><div>Deskripsi</div><div>Aksi</div></div>
+    <div id="adminEventList"></div>
+  </div>
+</section>
+
+<div class="modal" id="loginModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3>Login Pengurus</h3><button class="close-btn" onclick="closeModal('loginModal')">×</button></div>
+    <div class="login-error" id="loginError">Username atau password salah.</div>
+    <form onsubmit="login(event)">
+      <div class="form-group"><label>USERNAME / EMAIL</label><input id="loginUsername" autocomplete="username" required></div>
+      <div class="form-group"><label>PASSWORD</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+      <button class="primary-btn" type="submit">Masuk ke Panel Pengurus</button>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="eventModal">
+  <div class="modal-box">
+    <div class="modal-head"><h3 id="eventModalTitle">Tambah Jadwal</h3><button class="close-btn" onclick="closeModal('eventModal')">×</button></div>
+    <form onsubmit="saveEvent(event)">
+      <input type="hidden" id="editIndex">
+      <div class="form-group"><label>TANGGAL</label><input id="eventDate" type="date" required></div>
+      <div class="form-group"><label>NAMA KEGIATAN</label><input id="eventTitle" placeholder="Contoh: Rapat OSIS" required></div>
+      <div class="form-group"><label>KATEGORI</label>
+        <select id="eventCategory"><option>Upacara</option><option>Nasional</option><option>Libur Nasional</option><option>Pendidikan</option><option>Kegiatan Sekolah</option></select>
+      </div>
+      <div class="form-group"><label>DESKRIPSI</label><textarea id="eventDescription" placeholder="Keterangan kegiatan..."></textarea></div>
+      <button class="primary-btn" type="submit">Simpan Jadwal</button>
+    </form>
+  </div>
+</div>
+
+<main id="jadwal">
+<div class="section-title">
+<div><span class="small-title">AGENDA SEKOLAH</span><h2>Jadwal Kegiatan</h2></div>
+<div class="controls">
+<select id="monthFilter">
+<option value="all">Semua Bulan</option>
+<option value="2026-10">Oktober 2026</option><option value="2026-11">November 2026</option><option value="2026-12">Desember 2026</option>
+<option value="2027-01">Januari 2027</option><option value="2027-02">Februari 2027</option><option value="2027-03">Maret 2027</option>
+<option value="2027-04">April 2027</option><option value="2027-05">Mei 2027</option><option value="2027-06">Juni 2027</option>
+<option value="2027-07">Juli 2027</option><option value="2027-08">Agustus 2027</option><option value="2027-09">September 2027</option><option value="2027-10">Oktober 2027</option>
+</select>
+<input type="text" id="searchInput" placeholder="🔍 Cari kegiatan atau tanggal (17 Agustus)...">
+</div>
+</div>
+<div id="scheduleContainer" class="schedule-container"></div>
+</main>
+
+<section class="about" id="tentang">
+<div><span class="small-title">TENTANG WEBSITE</span><h2>SMADA CENTER</h2><p>SMADA CENTER merupakan pusat informasi digital sekolah yang membantu siswa mendapatkan informasi kegiatan sekolah secara cepat, jelas, dan terpusat.</p></div>
+<div class="about-box"><span>📅</span><h3>Informasi Terpusat</h3><p>Tidak perlu mencari informasi kegiatan dari banyak grup atau sumber berbeda.</p></div>
+</section>
+
+<footer><p>© 2026 SMADA CENTER — School Information Center</p></footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAelcnfzH2bnfyOj9ZwjQMBHoJD677y7Jg",
+  authDomain: "smadacenter.firebaseapp.com",
+  databaseURL: "https://smadacenter-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "smadacenter",
+  storageBucket: "smadacenter.firebasestorage.app",
+  messagingSenderId: "240433996990",
+  appId: "1:240433996990:web:d45dbb8e667512046daaef",
+  measurementId: "G-PTT648GWPJ"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+const eventsRef = db.ref("events");
+
+const events=[
+{date:"2026-10-01",title:"Upacara Hari Kesaktian Pancasila",category:"Upacara",description:"Peringatan Hari Kesaktian Pancasila."},
+{date:"2026-10-05",title:"Upacara Bendera Rutin",category:"Upacara",description:"Upacara bendera rutin hari Senin."},
+{date:"2026-10-28",title:"Hari Sumpah Pemuda",category:"Nasional",description:"Peringatan Hari Sumpah Pemuda."},
+{date:"2026-11-10",title:"Hari Pahlawan",category:"Nasional",description:"Peringatan Hari Pahlawan."},
+{date:"2026-12-22",title:"Hari Ibu",category:"Nasional",description:"Peringatan Hari Ibu Nasional."},
+{date:"2026-12-25",title:"Hari Raya Natal",category:"Libur Nasional",description:"Kelahiran Yesus Kristus."},
+{date:"2027-01-01",title:"Tahun Baru Masehi",category:"Libur Nasional",description:"Tahun Baru 2027."},
+{date:"2027-01-05",title:"Isra Mikraj Nabi Muhammad SAW",category:"Libur Nasional",description:"Peringatan Isra Mikraj."},
+{date:"2027-02-06",title:"Tahun Baru Imlek 2578 Kongzili",category:"Libur Nasional",description:"Perayaan Tahun Baru Imlek."},
+{date:"2027-03-08",title:"Hari Suci Nyepi",category:"Libur Nasional",description:"Tahun Baru Saka 1949."},
+{date:"2027-03-10",title:"Idul Fitri 1448 H",category:"Libur Nasional",description:"Hari Raya Idul Fitri."},
+{date:"2027-03-11",title:"Idul Fitri 1448 H",category:"Libur Nasional",description:"Hari Raya Idul Fitri."},
+{date:"2027-04-21",title:"Hari Kartini",category:"Nasional",description:"Peringatan Hari Kartini."},
+{date:"2027-05-01",title:"Hari Buruh Internasional",category:"Libur Nasional",description:"Peringatan Hari Buruh Internasional."},
+{date:"2027-05-02",title:"Hari Pendidikan Nasional",category:"Pendidikan",description:"Peringatan Hari Pendidikan Nasional."},
+{date:"2027-05-06",title:"Kenaikan Yesus Kristus",category:"Libur Nasional",description:"Hari Kenaikan Yesus Kristus."},
+{date:"2027-05-20",title:"Hari Raya Waisak",category:"Libur Nasional",description:"Hari Raya Waisak."},
+{date:"2027-06-01",title:"Hari Lahir Pancasila",category:"Nasional",description:"Peringatan Hari Lahir Pancasila."},
+{date:"2027-06-06",title:"Tahun Baru Islam 1449 H",category:"Libur Nasional",description:"1 Muharam 1449 Hijriah."},
+{date:"2027-08-17",title:"Hari Kemerdekaan Republik Indonesia",category:"Nasional",description:"Peringatan HUT Kemerdekaan Republik Indonesia."},
+{date:"2027-10-01",title:"Hari Kesaktian Pancasila",category:"Nasional",description:"Peringatan Hari Kesaktian Pancasila."}
+];
+
+function generateMondayCeremonies(){
+let current=new Date("2026-10-01T00:00:00"),end=new Date("2027-10-01T00:00:00");
+while(current<=end){
+if(current.getDay()===1){
+const d=current.getFullYear()+"-"+String(current.getMonth()+1).padStart(2,"0")+"-"+String(current.getDate()).padStart(2,"0");
+if(!events.some(e=>e.date===d))events.push({date:d,title:"Upacara Bendera Rutin",category:"Upacara",description:"Upacara bendera rutin hari Senin."});
+}
+current.setDate(current.getDate()+1);
+}}
+generateMondayCeremonies();
+
+function formatDate(s){return new Date(s+"T00:00:00").toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}
+
+function renderEvents(){
+const container=document.getElementById("scheduleContainer"),filter=document.getElementById("monthFilter").value,search=document.getElementById("searchInput").value.toLowerCase();
+const filtered=events.filter(e=>{
+const d=new Date(e.date+"T00:00:00");
+const dateVariants=[
+ e.date,
+ `${d.getDate()} ${d.toLocaleDateString("id-ID",{month:"long"})}`,
+ `${String(d.getDate()).padStart(2,"0")} ${d.toLocaleDateString("id-ID",{month:"long"})}`,
+ `${d.getDate()} ${d.toLocaleDateString("id-ID",{month:"short"})}`,
+ `${d.getDate()}-${String(d.getMonth()+1).padStart(2,"0")}`,
+ `${String(d.getDate()).padStart(2,"0")}-${String(d.getMonth()+1).padStart(2,"0")}`,
+ `${d.getDate()}/${d.getMonth()+1}`,
+ `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`,
+ `${d.getDate()} ${d.toLocaleDateString("id-ID",{month:"long"})} ${d.getFullYear()}`
+ ].map(v=>v.toLowerCase());
+const normalizedSearch=search.replace(/\s+/g," ").trim();
+const matchesDate=dateVariants.some(v=>v.includes(normalizedSearch)) ||
+ (normalizedSearch.includes(" ") && dateVariants.some(v=>v.replace(/-/g," ").replace(/\//g," ").includes(normalizedSearch)));
+return (filter==="all"||e.date.substring(0,7)===filter) &&
+ (e.title.toLowerCase().includes(search)||e.category.toLowerCase().includes(search)||matchesDate);
+}).sort((a,b)=>new Date(a.date)-new Date(b.date));
+container.innerHTML="";
+if(!filtered.length){container.innerHTML='<div class="empty">Tidak ada kegiatan yang ditemukan.</div>';return}
+filtered.forEach(e=>{
+let icon=e.category==="Upacara"?"🇮🇩":e.category==="Nasional"?"⭐":e.category==="Libur Nasional"?"🏖️":"📚";
+const d=new Date(e.date+"T00:00:00");
+const card=document.createElement("div");card.className="event-card";
+card.innerHTML=`<div class="event-date"><strong>${String(d.getDate()).padStart(2,"0")}</strong><span>${d.toLocaleDateString("id-ID",{month:"short"}).toUpperCase()}</span></div><div class="event-info"><span class="category">${icon} ${e.category}</span><h3>${e.title}</h3><p>${formatDate(e.date)}</p><small>${e.description}</small></div>`;
+container.appendChild(card);
+});
+document.getElementById("totalEvents").textContent=events.length;
+}
+function showNextEvent(){
+const today=new Date("2026-10-01T00:00:00"),upcoming=events.filter(e=>new Date(e.date+"T00:00:00")>=today).sort((a,b)=>new Date(a.date)-new Date(b.date))[0];
+if(!upcoming)return;const d=new Date(upcoming.date+"T00:00:00");
+document.getElementById("nextDay").textContent=String(d.getDate()).padStart(2,"0");
+document.getElementById("nextMonth").textContent=d.toLocaleDateString("id-ID",{month:"long"}).toUpperCase();
+document.getElementById("nextEvent").textContent=upcoming.title;
+}
+document.getElementById("monthFilter").addEventListener("change",renderEvents);
+document.getElementById("searchInput").addEventListener("input",renderEvents);
+renderEvents();showNextEvent();
+
+// ==================== PANEL PENGURUS ====================
+let editingIndex = -1;
+
+function saveEventsToStorage(){
+  // Kompatibilitas nama fungsi lama: sekarang data disimpan ke Firebase.
+  return eventsRef.set(events);
+}
+
+function loadEventsFromFirebase(){
+  eventsRef.on("value", snapshot => {
+    const data = snapshot.val();
+    if(Array.isArray(data)){
+      events.length = 0;
+      data.forEach(e => events.push(e));
+      renderEvents();
+      showNextEvent();
+      renderAdminEvents();
+      return;
+    }
+
+    // Jika database masih kosong, unggah jadwal awal dari file HTML.
+    saveEventsToStorage().catch(err => console.error("Gagal membuat data awal:", err));
+  }, err => {
+    console.error("Gagal membaca Firebase:", err);
+    document.getElementById("scheduleContainer").innerHTML = '<div class="empty">Gagal memuat jadwal dari server.</div>';
+  });
+}
+
+function openLogin(){
+  document.getElementById("loginModal").classList.add("show");
+  document.getElementById("loginUsername").focus();
+}
+
+function closeModal(id){
+  document.getElementById(id).classList.remove("show");
+}
+
+function login(ev){
+  ev.preventDefault();
+  const username = document.getElementById("loginUsername").value.trim();
+  const password = document.getElementById("loginPassword").value;
+  const error = document.getElementById("loginError");
+  error.classList.remove("show");
+
+  // Username lama tetap bisa dipakai: otomatis dipetakan ke email Firebase.
+  const email = username.includes("@") ? username : username + "@smadacenter.firebaseapp.com";
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => closeModal("loginModal"))
+    .catch(err => {
+      console.error(err);
+      error.textContent = "Login gagal. Pastikan akun Pengurus sudah dibuat di Firebase Authentication.";
+      error.classList.add("show");
+    });
+}
+
+function logout(){
+  auth.signOut().catch(err => console.error("Gagal logout:", err));
+}
+
+function openEventForm(index=-1){
+  editingIndex = index;
+  document.getElementById("eventModalTitle").textContent = index === -1 ? "Tambah Jadwal" : "Edit Jadwal";
+  if(index >= 0){
+    const e = events[index];
+    document.getElementById("eventDate").value = e.date;
+    document.getElementById("eventTitle").value = e.title;
+    document.getElementById("eventCategory").value = e.category;
+    document.getElementById("eventDescription").value = e.description;
+  }else{
+    document.getElementById("eventDate").value = "";
+    document.getElementById("eventTitle").value = "";
+    document.getElementById("eventCategory").value = "Kegiatan Sekolah";
+    document.getElementById("eventDescription").value = "";
+  }
+  document.getElementById("eventModal").classList.add("show");
+}
+
+function saveEvent(ev){
+  ev.preventDefault();
+  const item = {
+    date: document.getElementById("eventDate").value,
+    title: document.getElementById("eventTitle").value.trim(),
+    category: document.getElementById("eventCategory").value,
+    description: document.getElementById("eventDescription").value.trim() || "Informasi kegiatan sekolah."
+  };
+  if(editingIndex === -1){
+    events.push(item);
+  }else{
+    events[editingIndex] = item;
+  }
+  saveEventsToStorage()
+    .then(() => {
+      closeModal("eventModal");
+      renderEvents();
+      showNextEvent();
+      renderAdminEvents();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Jadwal gagal disimpan ke Firebase. Periksa aturan Realtime Database.");
+    });
+}
+
+function deleteEvent(index){
+  const e = events[index];
+  if(confirm('Hapus jadwal "' + e.title + '"?')){
+    events.splice(index,1);
+    saveEventsToStorage()
+      .then(() => {
+        renderEvents();
+        showNextEvent();
+        renderAdminEvents();
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Jadwal gagal dihapus dari Firebase.");
+      });
+  }
+}
+
+function renderAdminEvents(){
+  const list = document.getElementById("adminEventList");
+  if(!list) return;
+  const sorted = events.map((e,i)=>({e,i})).sort((a,b)=>new Date(a.e.date)-new Date(b.e.date));
+  list.innerHTML = sorted.map(({e,i}) => `
+    <div class="admin-row">
+      <div>${e.date}</div>
+      <div><strong>${escapeHtml(e.title)}</strong></div>
+      <div>${escapeHtml(e.category)}</div>
+      <div>${escapeHtml(e.description)}</div>
+      <div><button class="secondary-btn" onclick="openEventForm(${i})">Edit</button> <button class="danger-btn" onclick="deleteEvent(${i})">Hapus</button></div>
+    </div>
+  `).join("");
+}
+
+function escapeHtml(text){
+  return String(text).replace(/[&<>"']/g, function(m){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m];
+  });
+}
+
+auth.onAuthStateChanged(user => {
+  const panel = document.getElementById("adminPanel");
+  if(user){
+    panel.classList.add("show");
+    renderAdminEvents();
+  }else{
+    panel.classList.remove("show");
+  }
+});
+
+loadEventsFromFirebase();
+
+</script>
+</body>
+</html>
